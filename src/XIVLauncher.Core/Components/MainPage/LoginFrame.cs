@@ -15,8 +15,6 @@ public class LoginFrame : Component
     private readonly Input loginInput;
     private readonly Input passwordInput;
     private readonly Checkbox oneTimePasswordCheckbox;
-    private readonly Checkbox useSteamServiceCheckbox;
-    private readonly Checkbox freeTrialCheckbox;
     private readonly Checkbox autoLoginCheckbox;
     private readonly Button loginButton;
 
@@ -38,22 +36,23 @@ public class LoginFrame : Component
         set => this.oneTimePasswordCheckbox.Value = value;
     }
 
-    public bool IsSteam
-    {
-        get => this.useSteamServiceCheckbox.Value;
-        set => this.useSteamServiceCheckbox.Value = value;
-    }
-
     public bool IsAutoLogin
     {
         get => this.autoLoginCheckbox.Value;
         set => this.autoLoginCheckbox.Value = value;
     }
 
+    // Kept for compatibility but always false for Taiwan
+    public bool IsSteam
+    {
+        get => false;
+        set { }
+    }
+
     public bool IsFreeTrial
     {
-        get => this.freeTrialCheckbox.Value;
-        set => this.freeTrialCheckbox.Value = value;
+        get => false;
+        set { }
     }
 
     public event Action<LoginAction>? OnLogin;
@@ -69,15 +68,13 @@ public class LoginFrame : Component
             this.OnLogin?.Invoke(LoginAction.Game);
         }
 
-        this.loginInput = new Input(Strings.UsernameInput, Strings.UsernameInputHint, new Vector2(12f, 0f), 128);
+        this.loginInput = new Input("Email", "Enter your email", new Vector2(12f, 0f), 128);
         this.loginInput.Enter += TriggerLogin;
 
         this.passwordInput = new Input(Strings.PasswordInput, Strings.PasswordInputHint, new Vector2(12f, 0f), 128, flags: ImGuiInputTextFlags.Password | ImGuiInputTextFlags.NoUndoRedo);
         this.passwordInput.Enter += TriggerLogin;
 
         this.oneTimePasswordCheckbox = new Checkbox(Strings.UseOneTimePasswordCheckbox);
-        this.useSteamServiceCheckbox = new Checkbox(Strings.UseSteamServiceAccount);
-        this.freeTrialCheckbox = new Checkbox(Strings.FreeTrialAccountCheckbox);
         this.autoLoginCheckbox = new Checkbox(Strings.LogInAutomaticCheckbox);
 
         this.loginButton = new Button(Strings.LoginButton);
@@ -99,8 +96,6 @@ public class LoginFrame : Component
             this.passwordInput.Draw();
 
             this.oneTimePasswordCheckbox.Draw();
-            this.useSteamServiceCheckbox.Draw();
-            this.freeTrialCheckbox.Draw();
             this.autoLoginCheckbox.Draw();
 
             ImGui.Dummy(new Vector2(10));

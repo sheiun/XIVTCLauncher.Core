@@ -16,6 +16,7 @@ using XIVLauncher.Core.Components.MainPage;
 using XIVLauncher.Core.Components.SettingsPage;
 using XIVLauncher.Core.Configuration;
 using XIVLauncher.Core.Resources.Localization;
+using XIVLauncher.Core.Util;
 using XIVLauncher.PlatformAbstractions;
 
 namespace XIVLauncher.Core;
@@ -105,9 +106,11 @@ public class LauncherApp : Component
     };
 
     public ILauncherConfig Settings => Program.Config;
+    public TaiwanLauncher TaiwanLauncher { get; private set; }
     public Launcher Launcher { get; private set; }
     public ISteam? Steam => Program.Steam;
     public Storage Storage { get; private set; }
+    public TotpService TotpService { get; private set; }
 
     public LoadingPage LoadingPage { get; }
 
@@ -129,6 +132,8 @@ public class LauncherApp : Component
         this.Accounts = new AccountManager(this.Storage.GetFile("accounts.json"));
         this.UniqueIdCache = new CommonUniqueIdCache(this.Storage.GetFile("uidCache.json"));
 
+        this.TaiwanLauncher = new TaiwanLauncher();
+        this.TotpService = new TotpService();
         this.Launcher = new Launcher(Program.Steam, UniqueIdCache, frontierUrl, Program.Config.AcceptLanguage ?? ApiHelpers.GenerateAcceptLanguage());
 
         this.mainPage = new MainPage(this);
@@ -138,20 +143,7 @@ public class LauncherApp : Component
         this.ftsPage = new FtsPage(this);
         this.steamDeckPromptPage = new SteamDeckPromptPage(this);
 
-        if (!EnvironmentSettings.IsNoKillswitch && !string.IsNullOrEmpty(cutOffBootver))
-        {
-            var bootver = SeVersion.Parse(Repository.Boot.GetVer(Program.Config.GamePath));
-            var cutoff = SeVersion.Parse(cutOffBootver);
-
-            if (bootver > cutoff)
-            {
-                this.ShowMessage("XIVLauncher is unavailable at this time as there were changes to the login process during a recent patch." +
-                                "\n\nWe need to adjust to these changes and verify that our adjustments are safe before we can re-enable the launcher." +
-                                "\n\nYou can use the Official Launcher instead until XIVLauncher has been updated.",
-                                "XIVLauncher", "Close Launcher", () => Environment.Exit(0));
-                return;
-            }
-        }
+        // Killswitch disabled for Taiwan version (not applicable)
 
         this.RunStartupTasks();
 

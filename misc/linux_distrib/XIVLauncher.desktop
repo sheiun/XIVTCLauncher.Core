@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=XIVLauncher
-Comment=Custom launcher for the most critically acclaimed MMO
-Exec=xivlauncher
-Icon=xivlauncher
+Name=XIVTCLauncher
+Comment=Custom launcher for FFXIV Taiwan on Linux
+Exec=xivtclauncher
+Icon=xivtclauncher
 Terminal=false
 Type=Application
 Categories=Game;PackageManager;
-StartupWMClass=XIVLauncher.Core
+StartupWMClass=XIVTCLauncher.Core

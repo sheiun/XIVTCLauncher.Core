@@ -24,17 +24,17 @@ public class SettingsTabAbout : SettingsTab
     {
         ImGui.Image(this.logoTexture.ImGuiHandle, new Vector2(256) * ImGuiHelpers.GlobalScale);
 
-        ImGui.Text($"XIVLauncher Core v{AppUtil.GetAssemblyVersion()}({AppUtil.GetGitHash()})");
+        ImGui.Text($"XIVTCLauncher v{AppUtil.GetAssemblyVersion()}({AppUtil.GetGitHash()})");
 
-        var contribText = string.Format(Strings.XLCoreCreatedBy, "goaaats, Blooym, rankynbass");
+        var contribText = string.Format(Strings.XLCoreCreatedBy, "goaaats, Blooym, rankynbass, cycleapple");
         if (ImGui.Selectable(contribText, false, default, ImGui.CalcTextSize(contribText)))
-            AppUtil.OpenBrowser("https://github.com/goatcorp/XIVLauncher.Core/graphs/contributors");
+            AppUtil.OpenBrowser("https://github.com/cycleapple/XIVTCLauncher.Core/graphs/contributors");
 
         ImGui.Dummy(new Vector2(20));
 
         if (ImGui.Button(Strings.OpenRepositoryButton))
         {
-            AppUtil.OpenBrowser("https://github.com/goatcorp/XIVLauncher.Core");
+            AppUtil.OpenBrowser("https://github.com/cycleapple/XIVTCLauncher.Core");
         }
         ImGui.SameLine();
         if (ImGui.Button(Strings.JoinDiscordButton))

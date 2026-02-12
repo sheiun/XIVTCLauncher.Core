@@ -32,14 +32,8 @@ public class SettingsTabGame : SettingsTab
         },
 
         new SettingsEntry<string>(Strings.AdditionalGameArgsSetting, Strings.AdditionalGameArgsSettingDescription, () => Program.Config.AdditionalArgs, x => Program.Config.AdditionalArgs = x),
-        new SettingsEntry<ClientLanguage>(Strings.GameLanguageSetting, Strings.GameLanguageSettingDescription, () => Program.Config.ClientLanguage ?? ClientLanguage.English, x => Program.Config.ClientLanguage = x),
         new SettingsEntry<DpiAwareness>(Strings.GameDPIAwarenessSetting, Strings.GameDPIAwarenessSettingDescription, () => Program.Config.DpiAwareness ?? DpiAwareness.Unaware, x => Program.Config.DpiAwareness = x),
         new SettingsEntry<bool>(Strings.UseXLAuthMacrosSetting, Strings.UseXLAuthMacrosSettingDescription, () => Program.Config.IsOtpServer ?? false, x => Program.Config.IsOtpServer = x),
-        new SettingsEntry<bool>(Strings.IgnoreSteamSetting, Strings.IgnoreSteamSettingDescription, () => Program.Config.IsIgnoringSteam ?? false, x => Program.Config.IsIgnoringSteam = x)
-        {
-            CheckVisibility = () => !CoreEnvironmentSettings.IsSteamCompatTool,
-        },
-        new SettingsEntry<bool>(Strings.UseUIDCacheSetting, Strings.UseUIDCacheSettingDescription, () => Program.Config.IsUidCacheEnabled ?? false, x => Program.Config.IsUidCacheEnabled = x),
     };
 
     public override string Title => Strings.GameTitle;
@@ -48,13 +42,6 @@ public class SettingsTabGame : SettingsTab
     {
         base.Draw();
 
-        if (Program.Config.IsUidCacheEnabled == true)
-        {
-            ImGui.Text(Strings.ResetUIDCacheInfo);
-            if (ImGui.Button(Strings.ResetUIDCacheButton))
-            {
-                Program.ResetUIDCache();
-            }
-        }
+        // UID cache not used for Taiwan version
     }
 }

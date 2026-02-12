@@ -34,7 +34,7 @@ namespace XIVLauncher.Core;
 
 sealed class Program
 {
-    private const string APP_NAME = "xlcore";
+    private const string APP_NAME = "xivtclauncher";
     private static readonly Vector3 ClearColor = new(0.1f, 0.1f, 0.1f);
     private static string[] mainArgs = [];
     private static LauncherApp launcherApp = null!;
@@ -97,7 +97,7 @@ sealed class Program
         }
 
         Config.GameConfigPath ??= storage.GetFolder("ffxivConfig");
-        Config.ClientLanguage ??= ClientLanguage.English;
+        Config.ClientLanguage ??= ClientLanguage.ChineseTraditional;
         Config.DpiAwareness ??= DpiAwareness.Unaware;
         Config.IsAutologin ??= false;
         Config.CompletedFts ??= false;
@@ -188,59 +188,9 @@ sealed class Program
 
         Secrets = GetSecretProvider(storage);
 
-        Dictionary<uint, string> apps = [];
-        if (CoreEnvironmentSettings.SteamAppId != 0)
-        {
-            apps.Add(CoreEnvironmentSettings.SteamAppId, "XLM");
-        }
-        if (CoreEnvironmentSettings.AltAppID != 0)
-        {
-            apps.Add(CoreEnvironmentSettings.AltAppID, "XL_APPID");
-        }
-        if (!apps.ContainsKey(STEAM_APP_ID))
-        {
-            apps.Add(STEAM_APP_ID, "FFXIV Retail");
-        }
-        if (!apps.ContainsKey(STEAM_APP_ID_FT))
-        {
-            apps.Add(STEAM_APP_ID_FT, "FFXIV Free Trial");
-        }
-        try
-        {
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Win32NT:
-                    Steam = new WindowsSteam();
-                    break;
-
-                case PlatformID.Unix:
-                    Steam = new UnixSteam();
-                    break;
-
-                default:
-                    throw new PlatformNotSupportedException();
-            }
-            if (Config.IsIgnoringSteam != true || CoreEnvironmentSettings.IsSteamCompatTool)
-            {
-                foreach (var app in apps)
-                {
-                    try
-                    {
-                        Steam.Initialize(app.Key);
-                        Log.Information($"Successfully initialized Steam entry {app.Key} - {app.Value}");
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(ex, $"Failed to initialize Steam Steam entry {app.Key} - {app.Value}");
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Steam couldn't load");
-        }
+        // Steam integration disabled for Taiwan version
+        Steam = null;
+        Log.Information("Steam integration disabled (Taiwan version)");
 
         // Manual or auto injection setup.
         DalamudLoadInfo = new DalamudOverlayInfoProxy();
@@ -264,7 +214,7 @@ sealed class Program
             var mainScale = SDL.GetDisplayContentScale(SDL.GetPrimaryDisplay());
             var windowFlags = SDLWindowFlags.Resizable | SDLWindowFlags.Hidden | SDLWindowFlags.HighPixelDensity;
             window = SDL.CreateWindow(
-                $"XIVLauncher {version} ({hash})",
+                $"XIVTCLauncher {version} ({hash})",
                 (int)(1280 * mainScale),
                 (int)(800 * mainScale),
                 windowFlags);

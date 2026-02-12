@@ -1,81 +1,68 @@
 using System;
 using System.Threading.Tasks;
 
-using Steamworks;
-
 using XIVLauncher.Common.PlatformAbstractions;
 
 namespace XIVLauncher.Common.Unix
 {
+    // Steam integration removed for Taiwan version.
+    // This stub exists only to satisfy the ISteam interface requirement.
     public class UnixSteam : ISteam
     {
         public UnixSteam()
         {
-            SteamUtils.OnGamepadTextInputDismissed += b => OnGamepadTextInputDismissed?.Invoke(b);
         }
 
         public void Initialize(uint appId)
         {
-            // workaround because SetEnvironmentVariable doesn't actually touch the process environment on unix
-            [System.Runtime.InteropServices.DllImport("c")]
-            static extern int setenv(string name, string value, int overwrite);
-
-            setenv("SteamAppId", appId.ToString(), 1);
-            setenv("SteamGameId", appId.ToString(), 1);
-
-            SteamClient.Init(appId);
         }
 
-        public bool IsValid => SteamClient.IsValid;
+        public bool IsValid => false;
 
-        public bool BLoggedOn => SteamClient.IsLoggedOn;
+        public bool BLoggedOn => false;
 
-        public bool BOverlayNeedsPresent => SteamUtils.DoesOverlayNeedPresent;
+        public bool BOverlayNeedsPresent => false;
 
         public void Shutdown()
         {
-            SteamClient.Shutdown();
         }
 
-        public async Task<byte[]?> GetAuthSessionTicketAsync()
+        public Task<byte[]?> GetAuthSessionTicketAsync()
         {
-            var ticket = await SteamUser.GetAuthSessionTicketAsync().ConfigureAwait(true);
-            return ticket?.Data;
+            return Task.FromResult<byte[]?>(null);
         }
 
         public bool IsAppInstalled(uint appId)
         {
-            return SteamApps.IsAppInstalled(appId);
+            return false;
         }
 
         public string GetAppInstallDir(uint appId)
         {
-            return SteamApps.AppInstallDir(appId);
+            return string.Empty;
         }
 
         public bool ShowGamepadTextInput(bool password, bool multiline, string description, int maxChars, string existingText = "")
         {
-            return SteamUtils.ShowGamepadTextInput(password ? GamepadTextInputMode.Password : GamepadTextInputMode.Normal, multiline ? GamepadTextInputLineMode.MultipleLines : GamepadTextInputLineMode.SingleLine, description, maxChars, existingText);
+            return false;
         }
 
         public string GetEnteredGamepadText()
         {
-            return SteamUtils.GetEnteredGamepadText();
+            return string.Empty;
         }
 
         public bool ShowFloatingGamepadTextInput(ISteam.EFloatingGamepadTextInputMode mode, int x, int y, int width, int height)
         {
-            SteamUtils.ShowFloatingGamepadTextInput((TextInputMode)mode, x, y, width, height);
-            return true;
+            return false;
         }
 
-        public bool IsRunningOnSteamDeck() => SteamUtils.IsRunningOnSteamDeck;
+        public bool IsRunningOnSteamDeck() => false;
 
-        public uint GetServerRealTime() => (uint)((DateTimeOffset)SteamUtils.SteamServerTime).ToUnixTimeSeconds();
+        public uint GetServerRealTime() => (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
         public void ActivateGameOverlayToWebPage(string url, bool modal = false)
         {
-            SteamFriends.OpenWebOverlay(url, modal);
         }
 
         public event Action<bool> OnGamepadTextInputDismissed;
